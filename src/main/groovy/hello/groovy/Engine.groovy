@@ -1,8 +1,9 @@
 package hello.groovy
 
+import io.micronaut.context.annotation.Bean
+import io.micronaut.context.annotation.Factory
+
 import javax.inject.*
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 
 // needed to get the Singleton from there, otherwise the one from Groovy wins
 
@@ -11,20 +12,25 @@ interface Engine {
     String start()
 }
 
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@interface V8 {}
-
 @Singleton
-class V6Engine implements Engine {
-    Integer cylinders = 6
-    String start() { "Starting V6" }
-}
+class CrankShaft {}
 
-@Singleton
 class V8Engine implements Engine {
     Integer cylinders = 8
-    String start() { "Starting V8" }
+    final CrankShaft crankShaft
+    V8Engine(CrankShaft crankShaft) {
+        this.crankShaft = crankShaft
+    }
+    String start() { "Starting V8 with ${crankShaft}" }
+}
+
+@Factory
+class EngineFactory {
+    @Bean
+    @Singleton
+    Engine v8Engine(CrankShaft crankShaft) {
+        new V8Engine(crankShaft)
+    }
 }
 
 @Singleton
@@ -34,7 +40,7 @@ class Vehicle {
     final Engine engine
 
     @Inject
-    Vehicle(@V8 Engine engine) {
+    Vehicle(Engine engine) {
         this.engine = engine
     }
 
