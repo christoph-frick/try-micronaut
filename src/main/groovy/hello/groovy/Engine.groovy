@@ -8,6 +8,12 @@ interface Engine {
 }
 
 @Singleton
+class V6Engine implements Engine {
+    Integer cylinders = 6
+    String start() { "Starting V6" }
+}
+
+@Singleton
 class V8Engine implements Engine {
     Integer cylinders = 8
     String start() { "Starting V8" }
@@ -20,7 +26,7 @@ class Vehicle {
     final Engine engine
 
     @Inject
-    Vehicle(Engine engine) {
+    Vehicle(@Named('v8') Engine engine) {
         this.engine = engine
     }
 
