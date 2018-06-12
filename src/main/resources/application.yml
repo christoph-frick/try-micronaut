@@ -1,0 +1,5 @@
+micronaut:
+    application:
+        name: hello-groovy
+    server:
+        port: 8080
