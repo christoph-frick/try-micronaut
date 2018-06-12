@@ -3,6 +3,7 @@ package hello.groovy
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 
+import javax.annotation.PostConstruct
 import javax.inject.*
 
 // needed to get the Singleton from there, otherwise the one from Groovy wins
@@ -13,23 +14,18 @@ interface Engine {
 }
 
 @Singleton
-class CrankShaft {}
-
 class V8Engine implements Engine {
     Integer cylinders = 8
-    final CrankShaft crankShaft
-    V8Engine(CrankShaft crankShaft) {
-        this.crankShaft = crankShaft
-    }
-    String start() { "Starting V8 with ${crankShaft}" }
-}
+    private Boolean init = false
 
-@Factory
-class EngineFactory {
-    @Bean
-    @Singleton
-    Engine v8Engine(CrankShaft crankShaft) {
-        new V8Engine(crankShaft)
+    String start() {
+        assert init
+        "Starting V8"
+    }
+
+    @PostConstruct
+    void initialize() {
+        this.init = true
     }
 }
 
