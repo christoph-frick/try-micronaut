@@ -1,11 +1,19 @@
 package hello.groovy
 
-import javax.inject.* // needed to get the Singleton from there, otherwise the one from Groovy wins
+import javax.inject.*
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy
+
+// needed to get the Singleton from there, otherwise the one from Groovy wins
 
 interface Engine {
     Integer getCylinders()
     String start()
 }
+
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@interface V8 {}
 
 @Singleton
 class V6Engine implements Engine {
@@ -26,7 +34,7 @@ class Vehicle {
     final Engine engine
 
     @Inject
-    Vehicle(@Named('v8') Engine engine) {
+    Vehicle(@V8 Engine engine) {
         this.engine = engine
     }
 
